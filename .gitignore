@@ -2,8 +2,6 @@
 .terraform
 terraform.tfvars
 *.tfstate
-*.tfstate.backup
+*.tfstate*backup
 *.log
 .terraform.tfstate.lock.info
-
-kubeconfig
