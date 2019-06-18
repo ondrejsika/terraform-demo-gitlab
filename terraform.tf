@@ -17,11 +17,18 @@ data "digitalocean_droplet_snapshot" "gitlab" {
   most_recent = true
 }
 
+data "digitalocean_ssh_key" "ondrejsika" {
+  name = "ondrejsika"
+}
+
 resource "digitalocean_droplet" "gitlab" {
   image  = "${data.digitalocean_droplet_snapshot.gitlab.id}"
   name   = "gitlab"
   region = "fra1"
   size   = "s-4vcpu-8gb"
+  ssh_keys = [
+    data.digitalocean_ssh_key.ondrejsika.id
+  ]
 
   provisioner "local-exec" {
     when    = "destroy"
