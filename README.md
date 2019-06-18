@@ -1,56 +1,17 @@
-# Example of Terraform, Digital Ocean, Kubernetes
+# Demo Gitlab on Digital Ocean managed by Terraform
 
     Ondrej Sika <ondrej@ondrejsika.com>
-    https://github.com/ondrejsika/terraform-do-kubernetes-example
+    https://github.com/ondrejsika/terraform-demo-gitlab
 
-## Tutorial
-
-### Install Terraform & kubectl first
-
-```
-brew install kubernetes-cli
-brew install terraform
-```
-
-### Clone repository
-
-```
-git clone git@github.com:ondrejsika/terraform-do-kubernetes-example.git
-```
-
-### Initialize Terraform
+## Run Gitlab
 
 ```
 terraform init
-```
-
-### See infrastructure changes
-
-```
 terraform plan
-```
-
-### Apply infrastructure changes
-
-```
 terraform apply -auto-approve
 ```
 
-### Get your Kubernetes config
-
-```
-terraform output kubeconfig > kubeconfig
-```
-
-### Test connection to cluster
-
-```
-export KUBECONFIG=kubeconfig
-kubectl cluster-info
-kubectl get nodes
-```
-
-### Destroy your infrastructure
+### Stop Gitlab
 
 ```
 terraform destroy -auto-approve
