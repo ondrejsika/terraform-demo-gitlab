@@ -67,3 +67,47 @@ resource "cloudflare_record" "pages_wildcard" {
   type   = "CNAME"
   proxied = false
 }
+
+resource "digitalocean_droplet" "runner" {
+  image  = "docker-18-04"
+  name   = "runner"
+  region = "fra1"
+  size   = "s-2vcpu-4gb"
+  ssh_keys = [
+    data.digitalocean_ssh_key.ondrejsika.id
+  ]
+}
+
+resource "cloudflare_record" "runner" {
+  domain = "sikademo.com"
+  name   = "runner"
+  value  = "${digitalocean_droplet.runner.ipv4_address}"
+  type   = "A"
+  proxied = false
+}
+
+resource "digitalocean_droplet" "prod" {
+  image  = "docker-18-04"
+  name   = "prod"
+  region = "fra1"
+  size   = "s-2vcpu-4gb"
+  ssh_keys = [
+    data.digitalocean_ssh_key.ondrejsika.id
+  ]
+}
+
+resource "cloudflare_record" "prod" {
+  domain = "sikademo.com"
+  name   = "prod"
+  value  = "${digitalocean_droplet.prod.ipv4_address}"
+  type   = "A"
+  proxied = false
+}
+
+resource "cloudflare_record" "prod_wildcard" {
+  domain = "sikademo.com"
+  name   = "*.prod"
+  value  = "prod.sikademo.com"
+  type   = "CNAME"
+  proxied = false
+}
