@@ -86,9 +86,9 @@ resource "cloudflare_record" "runner" {
   proxied = false
 }
 
-resource "digitalocean_droplet" "prod" {
+resource "digitalocean_droplet" "web1" {
   image  = "docker-18-04"
-  name   = "prod"
+  name   = "web1"
   region = "fra1"
   size   = "s-2vcpu-4gb"
   ssh_keys = [
@@ -96,18 +96,18 @@ resource "digitalocean_droplet" "prod" {
   ]
 }
 
-resource "cloudflare_record" "prod" {
+resource "cloudflare_record" "web1" {
   domain = "sikademo.com"
-  name   = "prod"
-  value  = "${digitalocean_droplet.prod.ipv4_address}"
+  name   = "web1"
+  value  = "${digitalocean_droplet.web1.ipv4_address}"
   type   = "A"
   proxied = false
 }
 
-resource "cloudflare_record" "prod_wildcard" {
+resource "cloudflare_record" "web1_wildcard" {
   domain = "sikademo.com"
-  name   = "*.prod"
-  value  = "prod.sikademo.com"
+  name   = "*.web1"
+  value  = "web1.sikademo.com"
   type   = "CNAME"
   proxied = false
 }
