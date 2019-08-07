@@ -111,3 +111,61 @@ resource "cloudflare_record" "web1_wildcard" {
   type   = "CNAME"
   proxied = false
 }
+
+resource "digitalocean_firewall" "web" {
+  name = "web"
+
+  droplet_ids = ["${digitalocean_droplet.web1.id}"]
+
+  inbound_rule {
+      protocol           = "tcp"
+      port_range         = "2376"
+      source_addresses   = ["${digitalocean_droplet.runner.ipv4_address}"]
+  }
+
+  inbound_rule {
+      protocol           = "tcp"
+      port_range         = "22"
+      source_addresses   = ["0.0.0.0/0", "::/0"]
+  }
+
+  inbound_rule {
+      protocol           = "tcp"
+      port_range         = "80"
+      source_addresses   = ["0.0.0.0/0", "::/0"]
+  }
+
+  inbound_rule {
+      protocol           = "tcp"
+      port_range         = "8080"
+      source_addresses   = ["0.0.0.0/0", "::/0"]
+  }
+
+  inbound_rule {
+      protocol           = "tcp"
+      port_range         = "443"
+      source_addresses   = ["0.0.0.0/0", "::/0"]
+  }
+
+  inbound_rule {
+      protocol           = "icmp"
+      source_addresses   = ["0.0.0.0/0", "::/0"]
+  }
+
+  outbound_rule {
+      protocol                = "tcp"
+      port_range              = "all"
+      destination_addresses   = ["0.0.0.0/0", "::/0"]
+  }
+
+  outbound_rule {
+      protocol                = "udp"
+      port_range              = "all"
+      destination_addresses   = ["0.0.0.0/0", "::/0"]
+  }
+
+  outbound_rule {
+      protocol                = "icmp"
+      destination_addresses   = ["0.0.0.0/0", "::/0"]
+  }
+}
