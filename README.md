@@ -11,6 +11,8 @@ terraform plan
 terraform apply -auto-approve
 ```
 
+Gitlab will be on <https://gitlab.sikademo.com>. You can log in user `demo` with password `asdfasdf`.
+
 ### Stop Gitlab
 
 ```
