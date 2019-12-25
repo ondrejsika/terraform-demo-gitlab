@@ -1,14 +1,14 @@
 variable "do_token" {}
-variable "cloudflare_main_email" {}
-variable "cloudflare_main_token" {}
+variable "cloudflare_email" {}
+variable "cloudflare_token" {}
 
 provider "digitalocean" {
   token = "${var.do_token}"
 }
 
 provider "cloudflare" {
-  email = "${var.cloudflare_main_email}"
-  token = "${var.cloudflare_main_token}"
+  email = "${var.cloudflare_email}"
+  token = "${var.cloudflare_token}"
 }
 
 data "digitalocean_droplet_snapshot" "gitlab" {
