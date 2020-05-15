@@ -3,12 +3,12 @@ variable "cloudflare_email" {}
 variable "cloudflare_token" {}
 
 provider "digitalocean" {
-  token = "${var.do_token}"
+  token = var.do_token
 }
 
 provider "cloudflare" {
-  email = "${var.cloudflare_email}"
-  token = "${var.cloudflare_token}"
+  email = var.cloudflare_email
+  token = var.cloudflare_token
 }
 
 data "digitalocean_droplet_snapshot" "gitlab" {
@@ -22,7 +22,7 @@ data "digitalocean_ssh_key" "ondrejsika" {
 }
 
 resource "digitalocean_droplet" "gitlab" {
-  image  = "${data.digitalocean_droplet_snapshot.gitlab.id}"
+  image  = data.digitalocean_droplet_snapshot.gitlab.id
   name   = "gitlab"
   region = "fra1"
   size   = "s-4vcpu-8gb"
@@ -31,7 +31,7 @@ resource "digitalocean_droplet" "gitlab" {
   ]
 
   provisioner "local-exec" {
-    when    = "destroy"
+    when    = destroy
     command = "echo 'Destroy-time provisioner'"
   }
 }
@@ -39,7 +39,7 @@ resource "digitalocean_droplet" "gitlab" {
 resource "cloudflare_record" "gitlab" {
   domain = "sikademo.com"
   name   = "gitlab"
-  value  = "${digitalocean_droplet.gitlab.ipv4_address}"
+  value  = digitalocean_droplet.gitlab.ipv4_address
   type   = "A"
   proxied = false
 }
@@ -81,7 +81,7 @@ resource "digitalocean_droplet" "runner" {
 resource "cloudflare_record" "runner" {
   domain = "sikademo.com"
   name   = "runner"
-  value  = "${digitalocean_droplet.runner.ipv4_address}"
+  value  = digitalocean_droplet.runner.ipv4_address
   type   = "A"
   proxied = false
 }
@@ -99,7 +99,7 @@ resource "digitalocean_droplet" "web1" {
 resource "cloudflare_record" "web1" {
   domain = "sikademo.com"
   name   = "web1"
-  value  = "${digitalocean_droplet.web1.ipv4_address}"
+  value  = digitalocean_droplet.web1.ipv4_address
   type   = "A"
   proxied = false
 }
@@ -115,12 +115,12 @@ resource "cloudflare_record" "web1_wildcard" {
 resource "digitalocean_firewall" "web" {
   name = "web"
 
-  droplet_ids = ["${digitalocean_droplet.web1.id}"]
+  droplet_ids = [digitalocean_droplet.web1.id]
 
   inbound_rule {
       protocol           = "tcp"
       port_range         = "2376"
-      source_addresses   = ["${digitalocean_droplet.runner.ipv4_address}"]
+      source_addresses   = [digitalocean_droplet.runner.ipv4_address]
   }
 
   inbound_rule {
