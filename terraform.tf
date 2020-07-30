@@ -169,3 +169,22 @@ resource "digitalocean_firewall" "web" {
       destination_addresses   = ["0.0.0.0/0", "::/0"]
   }
 }
+
+output "gitlab_ip" {
+  value = digitalocean_droplet.gitlab.ipv4_address
+}
+output "runner_ip" {
+  value = digitalocean_droplet.runner.ipv4_address
+}
+output "web_ip" {
+  value = digitalocean_droplet.web1.ipv4_address
+}
+output "gitlab_domain" {
+  value = cloudflare_record.gitlab.hostname
+}
+output "runner_domain" {
+  value = cloudflare_record.runner.hostname
+}
+output "web_domain" {
+  value = cloudflare_record.web1.hostname
+}
