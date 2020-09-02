@@ -86,105 +86,15 @@ resource "cloudflare_record" "runner" {
   proxied = false
 }
 
-resource "digitalocean_droplet" "web1" {
-  image  = "docker-18-04"
-  name   = "web1"
-  region = "fra1"
-  size   = "s-2vcpu-4gb"
-  ssh_keys = [
-    data.digitalocean_ssh_key.ondrejsika.id
-  ]
-}
-
-resource "cloudflare_record" "web1" {
-  domain = "sikademo.com"
-  name   = "web1"
-  value  = digitalocean_droplet.web1.ipv4_address
-  type   = "A"
-  proxied = false
-}
-
-resource "cloudflare_record" "web1_wildcard" {
-  domain = "sikademo.com"
-  name   = "*.web1"
-  value  = "web1.sikademo.com"
-  type   = "CNAME"
-  proxied = false
-}
-
-resource "digitalocean_firewall" "web" {
-  name = "web"
-
-  droplet_ids = [digitalocean_droplet.web1.id]
-
-  inbound_rule {
-      protocol           = "tcp"
-      port_range         = "2376"
-      source_addresses   = [digitalocean_droplet.runner.ipv4_address]
-  }
-
-  inbound_rule {
-      protocol           = "tcp"
-      port_range         = "22"
-      source_addresses   = ["0.0.0.0/0", "::/0"]
-  }
-
-  inbound_rule {
-      protocol           = "tcp"
-      port_range         = "80"
-      source_addresses   = ["0.0.0.0/0", "::/0"]
-  }
-
-  inbound_rule {
-      protocol           = "tcp"
-      port_range         = "8080"
-      source_addresses   = ["0.0.0.0/0", "::/0"]
-  }
-
-  inbound_rule {
-      protocol           = "tcp"
-      port_range         = "443"
-      source_addresses   = ["0.0.0.0/0", "::/0"]
-  }
-
-  inbound_rule {
-      protocol           = "icmp"
-      source_addresses   = ["0.0.0.0/0", "::/0"]
-  }
-
-  outbound_rule {
-      protocol                = "tcp"
-      port_range              = "all"
-      destination_addresses   = ["0.0.0.0/0", "::/0"]
-  }
-
-  outbound_rule {
-      protocol                = "udp"
-      port_range              = "all"
-      destination_addresses   = ["0.0.0.0/0", "::/0"]
-  }
-
-  outbound_rule {
-      protocol                = "icmp"
-      destination_addresses   = ["0.0.0.0/0", "::/0"]
-  }
-}
-
 output "gitlab_ip" {
   value = digitalocean_droplet.gitlab.ipv4_address
 }
 output "runner_ip" {
   value = digitalocean_droplet.runner.ipv4_address
 }
-output "web_ip" {
-  value = digitalocean_droplet.web1.ipv4_address
-}
 output "gitlab_domain" {
   value = cloudflare_record.gitlab.hostname
 }
 output "runner_domain" {
   value = cloudflare_record.runner.hostname
-}
-output "web_domain" {
-  value = cloudflare_record.web1.hostname
 }
