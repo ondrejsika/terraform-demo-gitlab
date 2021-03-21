@@ -12,8 +12,8 @@ provider "cloudflare" {
 }
 
 data "digitalocean_droplet_snapshot" "gitlab" {
-  name  = "gitlab"
-  region = "fra1"
+  name        = "gitlab"
+  region      = "fra1"
   most_recent = true
 }
 
@@ -37,34 +37,34 @@ resource "digitalocean_droplet" "gitlab" {
 }
 
 resource "cloudflare_record" "gitlab" {
-  domain = "sikademo.com"
-  name   = "gitlab"
-  value  = digitalocean_droplet.gitlab.ipv4_address
-  type   = "A"
+  domain  = "sikademo.com"
+  name    = "gitlab"
+  value   = digitalocean_droplet.gitlab.ipv4_address
+  type    = "A"
   proxied = false
 }
 
 resource "cloudflare_record" "registry" {
-  domain = "sikademo.com"
-  name   = "registry"
-  value  = "gitlab.sikademo.com"
-  type   = "CNAME"
+  domain  = "sikademo.com"
+  name    = "registry"
+  value   = "gitlab.sikademo.com"
+  type    = "CNAME"
   proxied = false
 }
 
 resource "cloudflare_record" "pages" {
-  domain = "sikademo.com"
-  name   = "pages"
-  value  = "gitlab.sikademo.com"
-  type   = "CNAME"
+  domain  = "sikademo.com"
+  name    = "pages"
+  value   = "gitlab.sikademo.com"
+  type    = "CNAME"
   proxied = false
 }
 
 resource "cloudflare_record" "pages_wildcard" {
-  domain = "sikademo.com"
-  name   = "*.pages"
-  value  = "gitlab.sikademo.com"
-  type   = "CNAME"
+  domain  = "sikademo.com"
+  name    = "*.pages"
+  value   = "gitlab.sikademo.com"
+  type    = "CNAME"
   proxied = false
 }
 
@@ -79,10 +79,10 @@ resource "digitalocean_droplet" "runner" {
 }
 
 resource "cloudflare_record" "runner" {
-  domain = "sikademo.com"
-  name   = "runner"
-  value  = digitalocean_droplet.runner.ipv4_address
-  type   = "A"
+  domain  = "sikademo.com"
+  name    = "runner"
+  value   = digitalocean_droplet.runner.ipv4_address
+  type    = "A"
   proxied = false
 }
 
