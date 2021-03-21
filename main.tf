@@ -1,16 +1,3 @@
-variable "do_token" {}
-variable "cloudflare_email" {}
-variable "cloudflare_token" {}
-
-provider "digitalocean" {
-  token = var.do_token
-}
-
-provider "cloudflare" {
-  email = var.cloudflare_email
-  token = var.cloudflare_token
-}
-
 data "digitalocean_droplet_snapshot" "gitlab" {
   name        = "gitlab"
   region      = "fra1"
@@ -20,6 +7,9 @@ data "digitalocean_droplet_snapshot" "gitlab" {
 data "digitalocean_ssh_key" "ondrejsika" {
   name = "ondrejsika"
 }
+data "digitalocean_ssh_key" "vojtechmares" {
+  name = "vojtechmares"
+}
 
 resource "digitalocean_droplet" "gitlab" {
   image  = data.digitalocean_droplet_snapshot.gitlab.id
@@ -27,17 +17,13 @@ resource "digitalocean_droplet" "gitlab" {
   region = "fra1"
   size   = "s-4vcpu-8gb"
   ssh_keys = [
-    data.digitalocean_ssh_key.ondrejsika.id
+    data.digitalocean_ssh_key.ondrejsika.id,
+    data.digitalocean_ssh_key.vojtechmares.id,
   ]
-
-  provisioner "local-exec" {
-    when    = destroy
-    command = "echo 'Destroy-time provisioner'"
-  }
 }
 
 resource "cloudflare_record" "gitlab" {
-  domain  = "sikademo.com"
+  zone_id = var.cloudflare_zone_id
   name    = "gitlab"
   value   = digitalocean_droplet.gitlab.ipv4_address
   type    = "A"
@@ -45,7 +31,7 @@ resource "cloudflare_record" "gitlab" {
 }
 
 resource "cloudflare_record" "registry" {
-  domain  = "sikademo.com"
+  zone_id = var.cloudflare_zone_id
   name    = "registry"
   value   = "gitlab.sikademo.com"
   type    = "CNAME"
@@ -53,7 +39,7 @@ resource "cloudflare_record" "registry" {
 }
 
 resource "cloudflare_record" "pages" {
-  domain  = "sikademo.com"
+  zone_id = var.cloudflare_zone_id
   name    = "pages"
   value   = "gitlab.sikademo.com"
   type    = "CNAME"
@@ -61,7 +47,7 @@ resource "cloudflare_record" "pages" {
 }
 
 resource "cloudflare_record" "pages_wildcard" {
-  domain  = "sikademo.com"
+  zone_id = var.cloudflare_zone_id
   name    = "*.pages"
   value   = "gitlab.sikademo.com"
   type    = "CNAME"
@@ -79,7 +65,7 @@ resource "digitalocean_droplet" "runner" {
 }
 
 resource "cloudflare_record" "runner" {
-  domain  = "sikademo.com"
+  zone_id = var.cloudflare_zone_id
   name    = "runner"
   value   = digitalocean_droplet.runner.ipv4_address
   type    = "A"
