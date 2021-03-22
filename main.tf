@@ -15,7 +15,7 @@ resource "digitalocean_droplet" "gitlab" {
   image  = data.digitalocean_droplet_snapshot.gitlab.id
   name   = "gitlab"
   region = "fra1"
-  size   = "s-4vcpu-8gb"
+  size   = "s-8vcpu-16gb"
   ssh_keys = [
     data.digitalocean_ssh_key.ondrejsika.id,
     data.digitalocean_ssh_key.vojtechmares.id,
