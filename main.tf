@@ -7,9 +7,6 @@ data "digitalocean_droplet_snapshot" "gitlab" {
 data "digitalocean_ssh_key" "ondrejsika" {
   name = "ondrejsika"
 }
-data "digitalocean_ssh_key" "vojtechmares" {
-  name = "vojtechmares"
-}
 
 resource "digitalocean_droplet" "gitlab" {
   image  = data.digitalocean_droplet_snapshot.gitlab.id
@@ -18,7 +15,6 @@ resource "digitalocean_droplet" "gitlab" {
   size   = "s-8vcpu-16gb"
   ssh_keys = [
     data.digitalocean_ssh_key.ondrejsika.id,
-    data.digitalocean_ssh_key.vojtechmares.id,
   ]
 }
 
