@@ -1,5 +1,5 @@
 data "digitalocean_droplet_snapshot" "gitlab" {
-  name        = "gitlab"
+  name_regex  = "^gitlab-.*"
   region      = "fra1"
   most_recent = true
 }
