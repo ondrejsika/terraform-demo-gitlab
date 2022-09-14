@@ -5,3 +5,4 @@
 *.tfstate*backup
 *.log
 .terraform.tfstate.lock.info
+.infracost
