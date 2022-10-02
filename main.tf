@@ -16,6 +16,19 @@ resource "digitalocean_droplet" "gitlab" {
   ssh_keys = [
     data.digitalocean_ssh_key.ondrejsika.id,
   ]
+  user_data = <<EOF
+#cloud-config
+ssh_pwauth: yes
+password: asdfasdf1234
+chpasswd:
+  expire: false
+runcmd:
+  - |
+    rm -rf /etc/update-motd.d/99-one-click
+    apt-get update
+    apt-get install -y curl sudo git mc htop vim tree
+    curl -fsSL https://raw.githubusercontent.com/sikalabs/slu/master/install.sh | sudo sh
+EOF
 }
 
 resource "cloudflare_record" "gitlab" {
@@ -58,6 +71,27 @@ resource "digitalocean_droplet" "runner" {
   ssh_keys = [
     data.digitalocean_ssh_key.ondrejsika.id
   ]
+  user_data = <<EOF
+#cloud-config
+ssh_pwauth: yes
+password: asdfasdf1234
+chpasswd:
+  expire: false
+write_files:
+- path: /root/setup-gitlab-runner.sh
+  permissions: "0755"
+  owner: root:root
+  content: |
+    #!/bin/sh
+    slu login --url https://vault-slu.sikalabs.io --user gitlab-ci-sikademo --password gitlab-ci-sikademo
+    slu gitlab-ci setup-runner --gitlab sikademo
+runcmd:
+  - |
+    rm -rf /etc/update-motd.d/99-one-click
+    apt-get update
+    apt-get install -y curl sudo git mc htop vim tree
+    curl -fsSL https://raw.githubusercontent.com/sikalabs/slu/master/install.sh | sudo sh
+EOF
 }
 
 resource "cloudflare_record" "runner" {
