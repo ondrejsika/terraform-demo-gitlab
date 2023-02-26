@@ -1,3 +1,7 @@
+locals {
+  runner_vm_count = 1
+}
+
 data "digitalocean_droplet_snapshot" "gitlab" {
   name_regex  = "^gitlab-.*"
   region      = "fra1"
@@ -64,8 +68,10 @@ resource "cloudflare_record" "pages_wildcard" {
 }
 
 resource "digitalocean_droplet" "runner" {
+  count = local.runner_vm_count
+
   image  = "docker-18-04"
-  name   = "runner"
+  name   = "runner${count.index}"
   region = "fra1"
   size   = "s-2vcpu-4gb"
   ssh_keys = [
@@ -95,9 +101,11 @@ EOF
 }
 
 resource "cloudflare_record" "runner" {
+  count = local.runner_vm_count
+
   zone_id = var.cloudflare_zone_id
-  name    = "runner"
-  value   = digitalocean_droplet.runner.ipv4_address
+  name    = "runner${count.index}"
+  value   = digitalocean_droplet.runner[count.index].ipv4_address
   type    = "A"
   proxied = false
 }
@@ -105,12 +113,12 @@ resource "cloudflare_record" "runner" {
 output "gitlab_ip" {
   value = digitalocean_droplet.gitlab.ipv4_address
 }
-output "runner_ip" {
-  value = digitalocean_droplet.runner.ipv4_address
+output "runner_ips" {
+  value = digitalocean_droplet.runner[*].ipv4_address
 }
 output "gitlab_domain" {
   value = cloudflare_record.gitlab.hostname
 }
-output "runner_domain" {
-  value = cloudflare_record.runner.hostname
+output "runner_domains" {
+  value = cloudflare_record.runner[*].hostname
 }
