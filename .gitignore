@@ -6,3 +6,4 @@
 *.log
 .terraform.tfstate.lock.info
 .infracost
+*.local.txt
