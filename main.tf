@@ -70,7 +70,7 @@ resource "cloudflare_record" "pages_wildcard" {
 resource "digitalocean_droplet" "runner" {
   count = local.runner_vm_count
 
-  image  = "docker-18-04"
+  image  = "docker-20-04"
   name   = "runner${count.index}"
   region = "fra1"
   size   = "s-2vcpu-4gb"
