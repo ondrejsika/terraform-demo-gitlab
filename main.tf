@@ -89,8 +89,7 @@ write_files:
   owner: root:root
   content: |
     #!/bin/sh
-    slu login --url https://vault-slu.sikalabs.io --user gitlab-ci-sikademo --password gitlab-ci-sikademo
-    slu gitlab-ci setup-runner --gitlab sikademo --concurrency 10
+    slu gitlab-ci setup-runner --gitlab-url https://gitlab.sikademo.com --token glrt-xuWJ1aGAPh8N9Y7OImL1pG86MQp0OjEKdToyCw.01.121jgkeon --concurrency 10
 runcmd:
   - |
     rm -rf /etc/update-motd.d/99-one-click
