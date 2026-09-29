@@ -45,7 +45,7 @@ resource "cloudflare_record" "gitlab" {
 
 resource "cloudflare_record" "registry" {
   zone_id = var.cloudflare_zone_id
-  name    = "registry"
+  name    = "gitlab-registry"
   value   = "gitlab.sikademo.com"
   type    = "CNAME"
   proxied = false
