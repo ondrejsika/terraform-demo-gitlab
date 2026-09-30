@@ -14,7 +14,7 @@ data "digitalocean_ssh_key" "ondrejsika" {
 
 resource "digitalocean_droplet" "gitlab" {
   image  = data.digitalocean_droplet_snapshot.gitlab.id
-  name   = "gitlab"
+  name   = "gitlab-sikademo-com"
   region = "fra1"
   size   = "s-8vcpu-16gb"
   ssh_keys = [
